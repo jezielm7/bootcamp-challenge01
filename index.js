@@ -6,6 +6,17 @@ server.use(express.json());
 
 const projects = [];
 
+function reqNumber(req, res, next) {
+
+  console.log(`Método: ${req.method};`);
+  console.count("Number of Requests");
+  console.log('');
+
+  return next();
+};
+
+server.use(reqNumber);
+
 server.post('/projects', (req, res) => {
   const { id, title } = req.body;
 
