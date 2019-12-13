@@ -17,6 +17,18 @@ function reqNumber(req, res, next) {
 
 server.use(reqNumber);
 
+function checkProjectId(req, res, next) {
+
+  const { id } = req.params;
+  const projectCheck = projects.find(p => p.id == id);
+
+  if (!projectCheck) {
+    return res.status(400).json({ error: 'Project does not exists!' });
+  }
+
+  return next();
+};
+
 server.post('/projects', (req, res) => {
   const { id, title } = req.body;
 
@@ -32,7 +44,7 @@ server.post('/projects', (req, res) => {
 
 });
 
-server.post('/projects/:id/tasks', (req, res) => {
+server.post('/projects/:id/tasks', checkProjectId, (req, res) => {
   const { id } = req.params;
   const { tasks } = req.body;
 
@@ -48,7 +60,7 @@ server.get('/projects', (req, res) => {
   return res.json(projects);
 });
 
-server.put('/projects/:id', (req, res) => {
+server.put('/projects/:id', checkProjectId, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
@@ -59,7 +71,7 @@ server.put('/projects/:id', (req, res) => {
   return res.json(project);
 });
 
-server.delete('/projects/:id', (req, res) => {
+server.delete('/projects/:id', checkProjectId, (req, res) => {
   const { id } = req.params;
 
   const projectIndex = projects.findIndex(p => p.id == id);
