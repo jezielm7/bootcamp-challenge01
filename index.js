@@ -29,7 +29,19 @@ function checkProjectId(req, res, next) {
   return next();
 };
 
-server.post('/projects', (req, res) => {
+function checkTitleExists(req, res, next) {
+
+  const { title } = req.body;
+
+  const titleCheck = projects.find(p => p.title == title);
+
+  if (!titleCheck) {
+    return next();
+  }
+  return response.status(400).json({ "Error": "This title already exist" });
+};
+
+server.post('/projects', checkTitleExists, (req, res) => {
   const { id, title } = req.body;
 
   const project = {
@@ -44,7 +56,7 @@ server.post('/projects', (req, res) => {
 
 });
 
-server.post('/projects/:id/tasks', checkProjectId, (req, res) => {
+server.post('/projects/:id/tasks', checkProjectId, checkTitleExists, (req, res) => {
   const { id } = req.params;
   const { tasks } = req.body;
 
@@ -60,7 +72,7 @@ server.get('/projects', (req, res) => {
   return res.json(projects);
 });
 
-server.put('/projects/:id', checkProjectId, (req, res) => {
+server.put('/projects/:id', checkProjectId, checkTitleExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
