@@ -15,7 +15,7 @@ function reqNumber(req, res, next) {
   return next();
 };
 
-server.use(reqNumber);kkk
+server.use(reqNumber);
 
 function checkProjectId(req, res, next) {
 
